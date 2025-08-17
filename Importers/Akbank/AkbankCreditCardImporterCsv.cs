@@ -1,91 +1,52 @@
 using System.Globalization;
 using System.Text;
-using BankDataDb.Entities;
-using Microsoft.EntityFrameworkCore.Storage;
+using Importers.Models;
 
 namespace Importers.Akbank;
 
-// we want to avoid contuning in another thread since DbContext is not thread safe
-#pragma warning disable CA2007
-public class AkbankCreditCardImporterCsv : IBankImporter
+public class AkbankCreditCardImporterCsv : ICreditCardImporter
 {
-    public async Task<(IList<CardTransaction>, IDbContextTransaction)> Import(
-        BankDataContext context,
-        FileInfo filePath
-    )
+    public static string BankName = "Akbank T.A.Ş.";
+
+    public async Task<IList<CardTransaction>> Import(FileInfo filePath)
     {
-#pragma warning disable CA1849 //  File.ReadLinesAsync returns AsyncIEnumerable which requires to change everywhere it touches it isn't worth the hassle
-        IEnumerable<string> data = File.ReadLines(
+        var data = File.ReadLinesAsync(
             filePath.FullName,
             Encoding.GetEncoding("windows-1254") // windows-turkish since akbank seems to encode it in it for some reason
         );
-#pragma warning restore CA1849
-        IDbContextTransaction dbTransaction = await context.Database.BeginTransactionAsync();
 
-        try
-        {
-            Bank akbank = await GetAkbankBankAsync(context);
-            Card cardFromStatement = await GetAkbankCardAsync(data.First(), akbank, context);
-            IList<CardTransaction> cardTransactions = GetCardTransactions( // TODO: add duplicate item prevantion in case of
-                GetCardTransactionLines(data), //               importing current months statement multiple times
-                cardFromStatement
-            );
+        // ReSharper disable once PossibleMultipleEnumeration
+        // it is fine at most we are iterating twice
+        Card cardFromStatement = GetAkbankCardAsync(await data.FirstAsync());
+        IList<CardTransaction> cardTransactions = await GetCardTransactions(
+            // ReSharper disable once PossibleMultipleEnumeration
+            GetCardTransactionLines(data),
+            cardFromStatement
+        );
 
-            await context.CardTransactions.AddRangeAsync(cardTransactions);
-            _ = await context.SaveChangesAsync();
-            return (cardTransactions, dbTransaction);
-        }
-        catch (Exception)
-        {
-            await dbTransaction.RollbackAsync();
-            dbTransaction.Dispose();
-            throw;
-        }
+        return cardTransactions;
     }
 
-    public static async Task<Bank> GetAkbankBankAsync(BankDataContext context)
+    public static Card GetAkbankCardAsync(string cardLine)
     {
-        Bank? akbank = context.Banks.FirstOrDefault(static b => b.Name == "Akbank");
-        if (akbank is null)
+        Card card = new()
         {
-            akbank = new Bank() { Name = "Akbank" };
-            _ = await context.Banks.AddAsync(akbank);
-            _ = await context.SaveChangesAsync();
-        }
-        return akbank;
+            AvailableCardNumberPart = GetCardLast4Digits(cardLine),
+            Name = GetCardName(cardLine),
+            IssuedBank = BankName,
+        };
+
+        return card;
     }
 
-    public static async Task<Card> GetAkbankCardAsync(
-        string cardLine,
-        Bank akbank,
-        BankDataContext context
-    )
-    {
-        short cardLast4Digits = GetCardLast4Digits(cardLine);
-        Card? cardFromStatement = context.Cards.FirstOrDefault(c => c.Id == cardLast4Digits);
-        if (cardFromStatement is null)
-        {
-            cardFromStatement = new()
-            {
-                Id = cardLast4Digits,
-                Name = GetCardName(cardLine),
-                IssuedBank = akbank,
-            };
-            _ = await context.AddAsync(cardFromStatement);
-            _ = await context.SaveChangesAsync();
-        }
-
-        return cardFromStatement;
-    }
-
-    public static IList<CardTransaction> GetCardTransactions(
-        IEnumerable<string> cardTransactionLines,
+    public static async Task<IList<CardTransaction>> GetCardTransactions(
+        IAsyncEnumerable<string> cardTransactionLines,
         Card cardFromStatement
     )
     {
         List<CardTransaction> cardTransactions = [];
-        string cardTransactionCategory = "";
-        foreach (string cardTransactionLine in cardTransactionLines)
+        string? cardTransactionCategory = null;
+        await foreach (string cardTransactionLine in cardTransactionLines)
         {
             CardTransaction? transaction = GetCardTransaction(
                 cardTransactionLine,
@@ -102,12 +63,14 @@ public class AkbankCreditCardImporterCsv : IBankImporter
                 );
                 continue;
             }
+
+            transaction.Category = cardTransactionCategory;
             cardTransactions.Add(transaction);
         }
         return cardTransactions;
     }
 
-    public static IEnumerable<string> GetCardTransactionLines(IEnumerable<string> lines)
+    public static IAsyncEnumerable<string> GetCardTransactionLines(IAsyncEnumerable<string> lines)
     {
         return lines
             .SkipWhile(static l => !l.StartsWith("Tarih", false, CultureInfo.InvariantCulture))
@@ -138,9 +101,10 @@ public class AkbankCreditCardImporterCsv : IBankImporter
 
         // if it has country code it is in the last part
         // like in "******    *****       TR"
-        Country? country = Country.GetCountry(
-            string.Concat(comment.Reverse().TakeWhile(static c => c != ' ').Reverse())
-        );
+        Country country =
+            Country.GetCountry(
+                string.Concat(comment.Reverse().TakeWhile(static c => c != ' ').Reverse())
+            ) ?? Country.GetCountry("TR")!; // Assume TR since it is a Turkey bank TODO: infer from currency
 
         long amountInMinorUnit = long.Parse(
             string.Concat(
@@ -167,10 +131,8 @@ public class AkbankCreditCardImporterCsv : IBankImporter
             TransactionDate = transactionDate,
             Comment = comment,
             AmountInMinorUnit = amountInMinorUnit,
-            CurrencyCode = currency.CurrencyCode,
             Currency = currency,
             Country = country,
-            CountryAlpha3Code = country?.Alpha3Code,
             Card = card,
         };
     }
@@ -187,11 +149,11 @@ public class AkbankCreditCardImporterCsv : IBankImporter
         return cardName;
     }
 
-    public static short GetCardLast4Digits(string data)
+    public static string? GetCardLast4Digits(string data)
     {
         string[] cardNameAndNo = data.Split(";")[1].Split("/");
         string last4Digits = string.Concat(cardNameAndNo[1].Skip(16).Take(4));
-        return short.Parse(last4Digits, CultureInfo.InvariantCulture);
+        return last4Digits;
     }
 
     public string[] SupportedFileExtensions()

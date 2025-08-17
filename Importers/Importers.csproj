@@ -4,4 +4,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Linq.Async" Version="6.0.3" />
+    <None Include="*\**\*.seed.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>SeedData/%(Filename)%(Extension)</TargetPath>
+    </None>
+  </ItemGroup>
 </Project>

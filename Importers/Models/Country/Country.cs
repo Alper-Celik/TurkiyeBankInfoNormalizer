@@ -8,19 +8,19 @@ using System.Text.Json.Serialization;
 
 namespace Importers.Models;
 
-public class Country
+public class Country : IEquatable<Country>
 {
     [JsonPropertyName("alpha3")]
-    public required string Alpha3Code { get; set; }
+    public required string Alpha3Code { get; init; }
 
     [JsonPropertyName("alpha2")]
-    public required string Alpha2Code { get; set; }
+    public required string Alpha2Code { get; init; }
 
     [JsonPropertyName("id")]
-    public required short NumericCode { get; set; }
+    public required short NumericCode { get; init; }
 
     [JsonPropertyName("name")]
-    public required string EnglishName { get; set; }
+    public required string EnglishName { get; init; }
 
     public static Country? GetCountry(string codeOrName)
     {
@@ -36,14 +36,16 @@ public class Country
         {
             int i = 0;
             bool found = false;
+            string Alpha2Code = country.Alpha2Code;
+            string Alpha3Code = country.Alpha3Code;
             do
             {
-                if (codeOrName == country.Alpha2Code || codeOrName == country.Alpha3Code)
+                if (codeOrName == Alpha2Code || codeOrName == Alpha3Code)
                 {
                     found = true;
                 }
-                country.Alpha2Code = country.Alpha2Code.ToUpper(CultureInfo.InvariantCulture);
-                country.Alpha3Code = country.Alpha3Code.ToUpper(CultureInfo.InvariantCulture);
+                Alpha2Code = country.Alpha2Code.ToUpper(CultureInfo.InvariantCulture);
+                Alpha3Code = country.Alpha3Code.ToUpper(CultureInfo.InvariantCulture);
                 i++;
             } while (i != 2);
 
@@ -54,5 +56,53 @@ public class Country
         }
 
         return result;
+    }
+
+    public bool Equals(Country? other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        return string.Equals(Alpha3Code, other.Alpha3Code, StringComparison.InvariantCulture)
+            && string.Equals(Alpha2Code, other.Alpha2Code, StringComparison.InvariantCulture)
+            && NumericCode == other.NumericCode
+            && string.Equals(EnglishName, other.EnglishName, StringComparison.InvariantCulture);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
+        return Equals((Country)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        var hashCode = new HashCode();
+        hashCode.Add(Alpha3Code, StringComparer.InvariantCulture);
+        hashCode.Add(Alpha2Code, StringComparer.InvariantCulture);
+        hashCode.Add(NumericCode);
+        hashCode.Add(EnglishName, StringComparer.InvariantCulture);
+        return hashCode.ToHashCode();
     }
 }
