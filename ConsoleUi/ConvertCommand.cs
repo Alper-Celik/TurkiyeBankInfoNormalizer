@@ -93,15 +93,12 @@ public class ConvertCommand : Command
                 $"{Path.GetFileNameWithoutExtension(inputFile.Name)}_{DateTime.UtcNow.Millisecond}_output{exporter.FileFormat}"
             );
 
-        var export_result = await exporter.Export(
+        var exportResult = await exporter.Export(
             (await importTask).ToAsyncEnumerable(),
             outputFile.Open(FileMode.CreateNew, FileAccess.ReadWrite)
         );
+        await exportResult.DisposeAsync();
 
-        if (exporter.IsTextFormat)
-        {
-            Console.WriteLine(export_result);
-        }
         Console.WriteLine($"Converted Successfully, File at :\n{outputFile.FullName}");
 
         return (int)ExitCodes.Success;
