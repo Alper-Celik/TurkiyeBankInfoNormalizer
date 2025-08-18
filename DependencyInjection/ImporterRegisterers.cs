@@ -3,7 +3,7 @@ using Models.ImporterInterfaces;
 
 namespace DependencyInjection;
 
-public static class RegistererImporters
+public static class ImporterRegisterers
 {
     public static IServiceCollection RegisterCreditCardImporters(this IServiceCollection services)
     {

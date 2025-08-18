@@ -7,7 +7,7 @@ namespace Exporters.Csv;
 
 public class FullCsvExporter : ICreditCardTransactionExporter
 {
-    public string Name => "Full Csv Exporter";
+    public string Name => "csv-exporter-full";
     public string FileFormat => ".csv";
     public bool IsTextFormat => true;
 

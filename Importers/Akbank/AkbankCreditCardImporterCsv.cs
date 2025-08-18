@@ -9,7 +9,9 @@ namespace Importers.Akbank;
 
 public class AkbankCreditCardImporterCsv : ICreditCardImporter
 {
-    public static string BankName = "Akbank T.A.Ş.";
+    public string ImporterName => "akbank-cc-csv-importer";
+    public string BankName => "Akbank T.A.Ş.";
+    public IEnumerable<string> SupportedFileExtensions => [".csv"];
 
     public async Task<IList<CardTransaction>> Import(FileInfo filePath)
     {
@@ -30,7 +32,7 @@ public class AkbankCreditCardImporterCsv : ICreditCardImporter
         return cardTransactions;
     }
 
-    public static Card GetAkbankCardAsync(string cardLine)
+    public Card GetAkbankCardAsync(string cardLine)
     {
         Card card = new()
         {
@@ -157,10 +159,5 @@ public class AkbankCreditCardImporterCsv : ICreditCardImporter
         string[] cardNameAndNo = data.Split(";")[1].Split("/");
         string last4Digits = string.Concat(cardNameAndNo[1].Skip(16).Take(4));
         return last4Digits;
-    }
-
-    public string[] SupportedFileExtensions()
-    {
-        return [".csv"];
     }
 }

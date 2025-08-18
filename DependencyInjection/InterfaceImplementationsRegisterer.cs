@@ -46,7 +46,7 @@ public class InterfaceImplementationsRegisterer<TBaseType>
         return services;
     }
 
-    private void AddSingletonImporter<TImplementationType>(IServiceCollection services)
+    private static void AddSingletonImporter<TImplementationType>(IServiceCollection services)
         where TImplementationType : class, TBaseType
     {
         services.AddSingleton<TBaseType, TImplementationType>();

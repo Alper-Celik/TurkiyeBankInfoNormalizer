@@ -5,13 +5,13 @@ using Models.ImporterInterfaces;
 
 namespace DependencyInjection.Tests;
 
-public class RegistererImportersTests
+public class ImporterRegisterersTests
 {
     [Fact]
     public void RegisterCreditCardImporters_ShouldRegister()
     {
         var services = new ServiceCollection();
-        RegistererImporters.RegisterCreditCardImporters(services);
+        ImporterRegisterers.RegisterCreditCardImporters(services);
         var app = services.BuildServiceProvider();
 
         var importers = app.GetService<IEnumerable<ICreditCardImporter>>();

@@ -122,7 +122,7 @@ public class AkbankCreditCardImporterCsv_Tests
         AkbankCreditCardImporterCsv importer = new();
         string[] expected = [".csv"];
 
-        string[] actual = importer.SupportedFileExtensions();
+        IEnumerable<string> actual = importer.SupportedFileExtensions;
 
         Assert.Equal(expected, actual);
     }
