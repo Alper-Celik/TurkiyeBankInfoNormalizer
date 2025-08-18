@@ -14,19 +14,19 @@ public class ConvertCommand : Command
         Description = "File to convert",
     };
 
-    private readonly Option<FileInfo> _outputFileOption = new("output file")
+    private readonly Option<FileInfo> _outputFileOption = new("--output", "-o")
     {
         Description = "Output file. Extension is inferred from Exporter if not specified",
         Required = false,
     };
 
-    private readonly Option<string> _importerName = new("importer name")
+    private readonly Option<string> _importerName = new("--importer")
     {
         Description = "Importer to use",
         Required = true, // TODO: infer from input file
     };
 
-    private readonly Option<string> _exporterName = new("exporter name")
+    private readonly Option<string> _exporterName = new("--exporter")
     {
         Description = "Exporter to use",
         DefaultValueFactory = _ => "csv-exporter-full",
