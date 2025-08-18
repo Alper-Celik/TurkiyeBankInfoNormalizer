@@ -13,6 +13,11 @@ public class AkbankCreditCardImporterCsv : ICreditCardImporter
     public string BankName => "Akbank T.A.Ş.";
     public IEnumerable<string> SupportedFileExtensions => [".csv"];
 
+    public AkbankCreditCardImporterCsv()
+    {
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+    }
+
     public async Task<IList<CardTransaction>> Import(FileInfo filePath)
     {
         var data = File.ReadLinesAsync(
