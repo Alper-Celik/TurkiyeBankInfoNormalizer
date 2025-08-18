@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using ConsoleUi;
 using ConsoleUi.List;
 using DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +9,7 @@ ServiceCollection servicesBuilder = new ServiceCollection();
 servicesBuilder.RegisterCreditCardImporters();
 servicesBuilder.RegisterCreditCardExporters();
 servicesBuilder.AddKeyedSingleton<Command, ListCommand>("RootSubcommands");
+servicesBuilder.AddKeyedSingleton<Command, ConvertCommand>("RootSubcommands");
 
 // register list subcommands
 servicesBuilder.AddKeyedScoped<Command, ListExportersCommand>("ListSubcommands");
