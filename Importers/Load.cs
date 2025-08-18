@@ -2,5 +2,9 @@ namespace Importers;
 
 public static class Load
 {
-    public static bool loaded => true;
+    public static void LoadAssembly()
+    {
+        // Empty method that can be referenced
+        // and used to force loading of the assembly for use in reflection
+    }
 }
