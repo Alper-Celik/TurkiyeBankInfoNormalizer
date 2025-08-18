@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Importers.Models;
+namespace Models;
 
 public class CardTransaction
 {
@@ -9,8 +7,8 @@ public class CardTransaction
     public TimeOnly? TransactionTime { get; set; }
     public long AmountInMinorUnit { get; set; }
     public required string Comment { get; set; }
-    public required Currency Currency { get; set; }
-    public Country? Country { get; set; }
+    public required Currency.Currency Currency { get; set; }
+    public Country.Country? Country { get; set; }
     public required Card Card { get; set; }
     public string? Category { get; set; }
 }

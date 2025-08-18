@@ -1,5 +1,7 @@
 using Importers.Akbank;
-using Importers.Models;
+using Models;
+using Models.Country;
+using Models.Currency;
 
 namespace Importers.Tests.Akbank;
 

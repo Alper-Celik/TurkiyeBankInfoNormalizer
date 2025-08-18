@@ -1,4 +1,4 @@
-using Importers.Models;
+using Models;
 
 namespace Importers;
 

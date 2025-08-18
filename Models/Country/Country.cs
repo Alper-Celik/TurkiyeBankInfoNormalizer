@@ -1,14 +1,12 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Importers.Models;
+namespace Models.Country;
 
-public class Country : IEquatable<Country>
+public sealed class Country : IEquatable<Country>
 {
     [JsonPropertyName("alpha3")]
     public required string Alpha3Code { get; init; }
@@ -22,17 +20,33 @@ public class Country : IEquatable<Country>
     [JsonPropertyName("name")]
     public required string EnglishName { get; init; }
 
+    private static List<Country>? s_countries;
+    private static readonly Lock CountriesLock = new();
+
+    public static IList<Country> GetCountries()
+    {
+        if (s_countries is null)
+        {
+            lock (CountriesLock)
+            {
+                string assemblyPath = Path.GetDirectoryName(
+                    Assembly.GetExecutingAssembly().Location
+                )!;
+                string jsonPath = Path.Combine(assemblyPath, "SeedData", "countries.seed.json"); //from https://github.com/stefangabos/world_countries/blob/3480efd5b52aee45ebc22afa224cc05b70c500df/data/countries/en/countries.json
+                List<Country> countries =
+                    JsonSerializer.Deserialize<List<Country>>(File.ReadAllText(jsonPath))
+                    ?? throw new UnreachableException("json not found");
+                s_countries = countries;
+            }
+        }
+        return s_countries;
+    }
+
     public static Country? GetCountry(string codeOrName)
     {
         Country? result = null;
 
-        string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
-        string jsonPath = Path.Combine(assemblyPath, "SeedData", "countries.seed.json"); //from https://github.com/stefangabos/world_countries/blob/3480efd5b52aee45ebc22afa224cc05b70c500df/data/countries/en/countries.json
-        List<Country> countries =
-            JsonSerializer.Deserialize<List<Country>>(File.ReadAllText(jsonPath))
-            ?? throw new UnreachableException("json not found");
-
-        foreach (Country country in countries)
+        foreach (Country country in GetCountries())
         {
             int i = 0;
             bool found = false;

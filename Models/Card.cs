@@ -1,4 +1,4 @@
-namespace Importers.Models;
+namespace Models;
 
 public class Card
 {
