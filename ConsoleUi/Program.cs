@@ -1,4 +1,8 @@
-﻿using System.CommandLine;
+// SPDX-FileCopyrightText: 2025 Alper Çelik <alper@alper-celik.dev>
+//
+// SPDX-License-Identifier: Apache-2.0
+
+using System.CommandLine;
 using ConsoleUi;
 using ConsoleUi.List;
 using DependencyInjection;

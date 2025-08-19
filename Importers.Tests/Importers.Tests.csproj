@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: Copyright (c) .NET Foundation and Contributors, All Rights Reserved
+SPDX-FileCopyrightText: 2025 Alper Çelik <alper@alper-celik.dev>
+
+SPDX-License-Identifier: Apache-2.0
+-->
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>

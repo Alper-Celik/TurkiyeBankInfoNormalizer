@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Alper Çelik <alper@alper-celik.dev>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Reflection;

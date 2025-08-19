@@ -1,0 +1,20 @@
+<!--
+SPDX-FileCopyrightText: 2025 Alper Çelik <alper@alper-celik.dev>
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="ConsoleUi/ConsoleUi.csproj" />
+  <Project Path="DependencyInjection.Tests/DependencyInjection.Tests.csproj" />
+  <Project Path="DependencyInjection/DependencyInjection.csproj" />
+  <Project Path="Exporters/Exporters.csproj" />
+  <Project Path="Importers.Tests/Importers.Tests.csproj" />
+  <Project Path="Importers/Importers.csproj" />
+  <Project Path="Models/Models.csproj" />
+</Solution>

@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: Contributors to github/gitignore <https://github.com/github/gitignore>
+# SPDX-FileCopyrightText: 2025 Alper Çelik <alper@alper-celik.dev>
+#
+# SPDX-License-Identifier: CC0-1.0
+
 .idea
 
 ## A streamlined .gitignore for modern .NET projects
