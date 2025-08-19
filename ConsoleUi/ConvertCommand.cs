@@ -1,4 +1,5 @@
 using System.CommandLine;
+using Models;
 using Models.ExporterInterfaces;
 using Models.ImporterInterfaces;
 
@@ -9,9 +10,10 @@ public class ConvertCommand : Command
     private readonly IEnumerable<ICreditCardImporter> _creditCardImporters;
     private readonly IEnumerable<ICreditCardTransactionExporter> _cardTransactionExporters;
 
-    private readonly Argument<FileInfo> _inputFileArgument = new("input file")
+    private readonly Argument<List<FileInfo>> _inputFilesArgument = new("input file")
     {
         Description = "File to convert",
+        Arity = ArgumentArity.OneOrMore,
     };
 
     private readonly Option<FileInfo> _outputFileOption = new("--output", "-o")
@@ -44,7 +46,7 @@ public class ConvertCommand : Command
         _creditCardImporters = creditCardImporters;
         _cardTransactionExporters = cardTransactionExporters;
 
-        this.Arguments.Add(_inputFileArgument);
+        this.Arguments.Add(_inputFilesArgument);
 
         this.Options.Add(_outputFileOption);
         this.Options.Add(_exporterName);
@@ -85,16 +87,24 @@ public class ConvertCommand : Command
             return (int)ExitCodes.ExporterNotFound;
         }
 
-        var inputFile = parseResult.GetRequiredValue(_inputFileArgument);
-        var importTask = importer.Import(inputFile);
+        var inputFiles = parseResult.GetRequiredValue(_inputFilesArgument);
+        List<Task<IList<CardTransaction>>> importTasks = [];
+        foreach (FileInfo inputFile in inputFiles)
+        {
+            importTasks.Add(importer.Import(inputFile));
+        }
         FileInfo outputFile =
             parseResult.GetValue(_outputFileOption)
             ?? new FileInfo(
-                $"{Path.GetFileNameWithoutExtension(inputFile.Name)}_{DateTime.UtcNow.Millisecond}_output{exporter.FileFormat}"
+                $"{Path.GetFileNameWithoutExtension(inputFiles[0].Name)}_{DateTime.UtcNow.Millisecond}_output{exporter.FileFormat}"
             );
 
         var exportResult = await exporter.Export(
-            (await importTask).ToAsyncEnumerable(),
+            importTasks
+                .ToAsyncEnumerable()
+                .SelectManyAwait<Task<IList<CardTransaction>>, CardTransaction>(async task =>
+                    (await task).ToAsyncEnumerable()
+                ),
             outputFile.Open(FileMode.CreateNew, FileAccess.ReadWrite)
         );
         await exportResult.DisposeAsync();
