@@ -1,4 +1,12 @@
+<!--
+SPDX-FileCopyrightText: 2025 Alper Çelik <alper@alper-celik.dev>
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Türkiye Bank Info Normalizer
+
+[![codecov](https://codecov.io/gh/Alper-Celik/TurkiyeBankInfoNormalizer/graph/badge.svg?token=zgFqShKXLG)](https://codecov.io/gh/Alper-Celik/TurkiyeBankInfoNormalizer)
 
 A .NET project for importing, normalizing, and exporting Turkish bank data, The 
 project is modular, supporting various importers and exporters for different data formats.

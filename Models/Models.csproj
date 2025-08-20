@@ -17,8 +17,10 @@ SPDX-License-Identifier: MIT
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="CsvHelper">
-      <HintPath>..\..\..\.nuget\packages\csvhelper\33.1.0\lib\net9.0\CsvHelper.dll</HintPath>
-    </Reference>
+    <PackageReference Include="coverlet.msbuild" Version="6.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="CsvHelper" Version="33.1.0" />
   </ItemGroup>
 </Project>
