@@ -10,9 +10,13 @@ SPDX-License-Identifier: MIT
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>bankdata</AssemblyName>
+    <AssemblyName>trbankdata</AssemblyName>
     <Version>0.0.0</Version>
     <Authors>Alper Çelik</Authors>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>trbankdata</ToolCommandName>
+    <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Importers/Importers.csproj" />

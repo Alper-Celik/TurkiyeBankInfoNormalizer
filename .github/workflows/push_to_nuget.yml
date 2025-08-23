@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: 2025 Alper Çelik <alper@alper-celik.dev>
+#
+# SPDX-License-Identifier: Apache-2.0
+
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: Publish to Nuget
+
+on:
+  workflow_dispatch: 
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Pack
+        working-directory: ./ConsoleUi 
+        run: dotnet pack
+      - name: Publish
+        working-directory: ./ConsoleUi
+        run: dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_APIKEY
+        env:
+          NUGET_APIKEY: ${{ secrets.NUGET_APIKEY }}
