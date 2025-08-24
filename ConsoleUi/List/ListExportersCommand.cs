@@ -22,7 +22,11 @@ public class ListExportersCommand : Command
 
     private int List(ParseResult parseResult)
     {
-        foreach (ICreditCardTransactionExporter exporter in _cardTransactionExporters)
+        foreach (
+            ICreditCardTransactionExporter exporter in _cardTransactionExporters.OrderBy(c =>
+                c.Name
+            )
+        )
         {
             Console.WriteLine($"{exporter.Name} : ");
             Console.WriteLine($"\tExported File Format = {exporter.FileFormat}");

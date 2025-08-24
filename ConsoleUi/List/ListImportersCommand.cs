@@ -21,7 +21,7 @@ public class ListImportersCommand : Command
 
     private int List(ParseResult parseResult)
     {
-        foreach (ICreditCardImporter importer in _creditCardImporters)
+        foreach (ICreditCardImporter importer in _creditCardImporters.OrderBy(c => c.ImporterName))
         {
             Console.WriteLine($"{importer.ImporterName} :");
             Console.WriteLine($"\tSupported Bank = {importer.BankName}");
