@@ -15,6 +15,7 @@ SPDX-License-Identifier: MIT
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="NPOI" Version="2.7.4" />
     <PackageReference Include="System.Linq.Async" Version="6.0.3" />
     <PackageReference Include="System.Text.Encoding" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.8" />
