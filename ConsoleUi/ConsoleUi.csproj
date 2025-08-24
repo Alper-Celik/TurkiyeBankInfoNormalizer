@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>trbankdata</AssemblyName>
-    <Version>0.0.0</Version>
+    <Version>0.0.1</Version>
     <Authors>Alper Çelik</Authors>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>trbankdata</ToolCommandName>
