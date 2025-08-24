@@ -17,6 +17,15 @@ project is modular, supporting various importers and exporters for different dat
 - Extensible via dependency injection
 - Console UI for command-line operations
 
+## Installation
+
+you need [.NET 9](https://dotnet.microsoft.com/en-us/download/dotnet/9.0) installed 
+
+you can install by running :
+```shell
+dotnet tool install trbankdata --global
+```
+
 ## Project Structure
 - `ConsoleUi/` - Command-line interface for interacting with the application
 - `DependencyInjection/` - Dependency injection setup and service registration
