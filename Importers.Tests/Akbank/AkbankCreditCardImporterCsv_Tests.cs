@@ -59,7 +59,7 @@ public class AkbankCreditCardImporterCsv_Tests
                 new CardTransaction()
                 {
                     TransactionDate = new DateOnly(2025, 7, 8),
-                    AmountInMinorUnit = 6500,
+                    Outflow = 65,
                     Comment = "[Redacted]             [Redacted(city)]         TR",
                     Currency = Currency.GetCurrency("TRY")!,
                     Country = Country.GetCountry("TUR"),
@@ -72,7 +72,7 @@ public class AkbankCreditCardImporterCsv_Tests
                 {
                     TransactionDate = new DateOnly(2025, 6, 17),
                     Comment = "Chip-Para ile Ödeme",
-                    AmountInMinorUnit = -13360,
+                    Inflow = -133.60m,
                     Currency = Currency.GetCurrency("TRY")!,
                     Country = Country.GetCountry("TUR"),
 
@@ -95,7 +95,8 @@ public class AkbankCreditCardImporterCsv_Tests
 
         Assert.Equal(expected.TransactionDate, actual!.TransactionDate);
         Assert.Equal(expected.Comment, actual.Comment);
-        Assert.Equal(expected.AmountInMinorUnit, actual.AmountInMinorUnit);
+        Assert.Equal(expected.Outflow, actual.Outflow);
+        Assert.Equal(expected.Inflow, actual.Inflow);
         Assert.Equal(expected.Currency, actual.Currency);
         Assert.Equal(expected.Country, actual.Country);
     }

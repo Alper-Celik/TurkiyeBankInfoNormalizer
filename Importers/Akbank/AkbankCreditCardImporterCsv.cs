@@ -144,7 +144,8 @@ public class AkbankCreditCardImporterCsv : ICreditCardImporter
         {
             TransactionDate = transactionDate,
             Comment = comment,
-            AmountInMinorUnit = amountInMinorUnit,
+            Inflow = (amountInMinorUnit < 0) ? (amountInMinorUnit * -1) / 100m : 0m,
+            Outflow = (amountInMinorUnit > 0) ? amountInMinorUnit / 100m : 0m,
             Currency = currency,
             Country = country,
             Card = card,

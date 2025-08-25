@@ -8,7 +8,7 @@ using CsvHelper.Configuration.Attributes;
 
 namespace Models;
 
-public class CardTransaction
+public record CardTransaction
 {
     [Format("o")]
     public required DateOnly TransactionDate { get; set; }
@@ -16,7 +16,9 @@ public class CardTransaction
     [Format("o")]
     public TimeOnly? TransactionTime { get; set; }
 
-    public long AmountInMinorUnit { get; set; }
+    public decimal Inflow { get; set; }
+
+    public decimal Outflow { get; set; }
 
     public required string Comment { get; set; }
 

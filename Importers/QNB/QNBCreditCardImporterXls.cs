@@ -184,7 +184,8 @@ public class QnbCreditCardImporterXls : ICreditCardImporter
                     TransactionDate = transactionDate,
                     Comment = comment,
                     Currency = currency,
-                    AmountInMinorUnit = amountInMinorUnit,
+                    Inflow = (amountInMinorUnit < 0) ? (amountInMinorUnit * -1) / 100m : 0m,
+                    Outflow = (amountInMinorUnit > 0) ? amountInMinorUnit / 100m : 0m,
                     Card = qnbCard,
                 }
             );
