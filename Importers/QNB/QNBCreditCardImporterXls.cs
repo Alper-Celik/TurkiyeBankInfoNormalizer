@@ -16,6 +16,7 @@ namespace Importers.QNB;
 public class QnbCreditCardImporterXls : ICreditCardImporter
 {
     private const int ECell = 5 - 1;
+    private const int BCell = 2 - 1;
     IEnumerable<string> ICreditCardImporter.SupportedFileExtensions => [".xls"];
 
     public string ImporterName => "qnb-cc-xls-importer";
@@ -58,8 +59,6 @@ public class QnbCreditCardImporterXls : ICreditCardImporter
         ISheet cardStatementFile
     )
     {
-        List<(Card, IEnumerable<string[]>)> cardTransactionsList = new();
-
         foreach (var i in GetCardRowNumbers(cardStatementFile))
         {
             Card card = GetQnbCardAsync(cardStatementFile.GetRow(i).GetCell(ECell).StringCellValue);
@@ -70,11 +69,14 @@ public class QnbCreditCardImporterXls : ICreditCardImporter
     private static IEnumerable<int> GetCardRowNumbers(ISheet cardStatementFile)
     {
         List<string> eCells = ["non empty", "non empty"];
-        for (int i = 1; true; i++)
+        for (int i = 1; ; i++)
         {
             var row = GetRow(cardStatementFile, i);
             var eCellValue = row.GetCell(ECell)?.StringCellValue ?? string.Empty;
-            if (eCellValue.Contains("KART"))
+            if (
+                eCellValue.Contains("KART")
+                && string.IsNullOrEmpty(row.GetCell(BCell)?.StringCellValue)
+            )
             {
                 yield return i - 1;
             }
@@ -91,18 +93,19 @@ public class QnbCreditCardImporterXls : ICreditCardImporter
     public static IList<string[]> GetCardTransactionRows(ISheet cardStatement, int cardRow)
     {
         List<string[]> cardTransactionRows = [];
+        List<string> lastLines = ["non empty"];
         for (
             int i = cardRow + 1;
-            !string.IsNullOrEmpty(
-                cardStatement
-                    .GetRow(i)
-                    .GetCell(GetStatementColumns(cardStatement).First())
-                    .StringCellValue
-            );
+            lastLines.TakeLast(2).Aggregate(false, (b, s) => b || !string.IsNullOrEmpty(s));
             i++
         )
         {
             IRow row = cardStatement.GetRow(i);
+            lastLines.Add(row.GetCell(GetStatementColumns(cardStatement).First()).StringCellValue);
+            if (lastLines.Last() == string.Empty)
+            {
+                continue;
+            }
             List<string> cells = new();
 
             foreach (int j in GetStatementColumns(cardStatement))
