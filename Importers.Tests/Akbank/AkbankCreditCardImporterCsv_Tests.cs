@@ -72,7 +72,7 @@ public class AkbankCreditCardImporterCsv_Tests
                 {
                     TransactionDate = new DateOnly(2025, 6, 17),
                     Comment = "Chip-Para ile Ödeme",
-                    Inflow = -133.60m,
+                    Inflow = 133.60m,
                     Currency = Currency.GetCurrency("TRY")!,
                     Country = Country.GetCountry("TUR"),
 
