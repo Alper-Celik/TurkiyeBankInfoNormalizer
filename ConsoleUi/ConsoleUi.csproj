@@ -11,12 +11,16 @@ SPDX-License-Identifier: MIT
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>trbankdata</AssemblyName>
-    <Version>0.0.3</Version>
+    <Version>0.0.4</Version>
     <Authors>Alper Çelik</Authors>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>trbankdata</ToolCommandName>
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     <PackageOutputPath>./nupkg</PackageOutputPath>
+    <RepositoryUrl>https://github.com/Alper-Celik/TurkiyeBankInfoNormalizer</RepositoryUrl>
+    <PackageLicenseFile>Apache-2.0.txt</PackageLicenseFile>
+    <PackageLicenseFile>MIT.txt</PackageLicenseFile>
+    <PackageLicenseFile>CC0-1.0.txt</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Importers/Importers.csproj" />
@@ -24,6 +28,7 @@ SPDX-License-Identifier: MIT
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\LICENSES\*" Pack="true" PackagePath="" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="6.0.4">
@@ -33,5 +38,8 @@ SPDX-License-Identifier: MIT
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta7.25380.108" />
     <PackageReference Include="System.Linq.Async" Version="6.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="nupkg\" />
   </ItemGroup>
 </Project>
