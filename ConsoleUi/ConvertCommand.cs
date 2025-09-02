@@ -14,9 +14,9 @@ public class ConvertCommand : Command
     private readonly IEnumerable<ICreditCardImporter> _creditCardImporters;
     private readonly IEnumerable<ICreditCardTransactionExporter> _cardTransactionExporters;
 
-    private readonly Argument<List<FileInfo>> _inputFilesArgument = new("input file")
+    private readonly Argument<List<FileInfo>> _inputFilesArgument = new("input files")
     {
-        Description = "File to convert",
+        Description = "Files to convert",
         Arity = ArgumentArity.OneOrMore,
     };
 
